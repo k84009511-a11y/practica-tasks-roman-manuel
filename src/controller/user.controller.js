@@ -83,6 +83,6 @@ export const updateUser = async () => {
     }
 }
 
-User.hasMany(Task, { foreignKey: 'userId', sourceKey: 'id' });
+
 
 
