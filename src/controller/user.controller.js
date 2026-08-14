@@ -1,4 +1,7 @@
+import { PersonalInfo } from '../models/personal_Info.model.js';
+import { Task } from '../models/task.model.js';
 import { User } from '../models/user.model.js';
+
 
 export const createUser = async (req, res) => {
   try {
@@ -19,7 +22,21 @@ export const createUser = async (req, res) => {
 
 export const getUser = async (req, res) => {
     try{
-        const users = await User.findAll();
+        const users = await User.findAll({
+            include: {
+                model: Task,
+                as: "tareas",
+                attributes: ["id", "title", "description", "isComplete"]
+            },
+            attributes: { exclude: "password"},
+            include: {
+                model: PersonalInfo,
+                as: "InfoPersonal",
+                attributes: ["id", "dni", "cuil", "birthDate", "gender", "height", "weight"],
+                exclude: ['createdAt', 'updatedAt', 'users_id']
+            }
+        });
+
         return res.status(200).json(users)
     } catch (error){
         return res.status(500).json({ 
@@ -31,7 +48,20 @@ export const getUser = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        const userFind = await User.findByPk(id);
+        const userFind = await User.findByPk(id,
+            {
+                attributes: { exclude: ["password"]},
+            include: [{
+                model: Task,
+                as: "tareas",
+            },
+            {
+                model: PersonalInfo,
+                as: "InfoPersonal",
+                attributes: ["id", "dni", "cuil", "birthDate", "gender", "height", "weight"],
+                exclude: ['createdAt', 'updatedAt', 'users_id']
+            }]
+        });
 
         if (!userFind){
             return res.status(404).json ({ 
@@ -82,7 +112,3 @@ export const updateUser = async () => {
         return res.status(500).json( { message: "Error al actualizar el usuario", error: error.message })
     }
 }
-
-User.hasMany(Task, { foreignKey: 'userId', sourceKey: 'id' });
-
-
