@@ -1,5 +1,6 @@
 import { sequelize } from "../config/database.js"
 import { DataTypes } from "sequelize"
+import { User } from "./user.model.js"
 
 export const Task = sequelize.define ('Task', {
     id: {
@@ -21,3 +22,6 @@ export const Task = sequelize.define ('Task', {
         defaultValue: false
     }
 })
+Task.belongsTo(User, { foreignKey: "users_id", as:"autor" });
+
+User.hasMany(Task, { foreignKey: "users_id", as:"tareas"})

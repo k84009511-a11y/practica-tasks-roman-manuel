@@ -1,25 +1,40 @@
 import { Task } from "../models/task.model.js";
+import { User } from "../models/user.model.js";
 
 export const createTask = async (req, res) =>{
     try{
-        const { tittle, description, isComplete} = req.body;
+        const { title, description, isComplete, users_id} = req.body;
 
-        if(!tittle||!description ||!isComplete){
+        if(!title||!description ||!users_id){
             return res.status(400).json({ message: "Todos los campos son obligatorios"})
         }
-    const newTask = await Task.create({tittle,description,isComplete})
+    const newTask = await Task.create({title,description,isComplete, users_id})
     
-    return res.status(200).json(newTask)
+    return res.status(201).json(newTask)
     }catch(error){
         return res.status(500).json({ 
             message: "Error al crear la tarea", 
             error: error.message });  
     }
+
+    const userExists = await User.findByPk(users_id);
+        if (!userExists) {
+            return res.status(404).json({ message: "El usuario especificado no existe" });
+    }
+
 } 
 
 export const getTasks = async (req, res) => {
     try{
-        const tasks = await Task.findAll();
+        const tasks = await Task.findAll({
+            include: {
+                model: User,
+                as: "autor",
+                attributes: ["id", "name", "email"],
+                exclude: ['createdAt', 'updatedAt', 'users_id']
+            }
+        });
+
         return res.status(200).json(tasks)
     } catch (error){
         return res.status(500).json({ 
@@ -31,7 +46,14 @@ export const getTasks = async (req, res) => {
 export const getTasksById = async (req, res) => {
     try {
         const { id } = req.params;
-        const taskFind = await Task.findByPk(id);
+        const taskFind = await Task.findByPk(id, {
+            include: {
+                model: User,
+                as: "autor",
+                attributes: ["id", "name", "email"],
+                exclude: ['createdAt', 'updatedAt', 'users_id']
+            }
+        });
 
         if (!taskFind){
             return res.status(404).json ({ 
@@ -83,4 +105,3 @@ export const updateTask = async (req, res) => {
         return res.status(500).json({message: "Error al actualizar la tarea", error: error.message})
     }
 }
-
