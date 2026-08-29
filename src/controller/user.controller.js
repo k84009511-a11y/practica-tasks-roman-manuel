@@ -1,3 +1,4 @@
+import { matchedData } from 'express-validator';
 import { PersonalInfo } from '../models/personal_Info.model.js';
 import { Task } from '../models/task.model.js';
 import { User } from '../models/user.model.js';
@@ -5,12 +6,10 @@ import { User } from '../models/user.model.js';
 
 export const createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
 
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: "Todos los campos son obligatorios" });
-        }
-    const newUser = await User.create({ name, email, password });
+    const validatedData = matchedData(req);
+
+    const newUser = await User.create(validatedData);
 
     return res.status(201).json(newUser);
     }catch(error){
