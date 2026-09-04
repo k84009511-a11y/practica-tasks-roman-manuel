@@ -52,5 +52,15 @@ export const validateUpdateTask = [
 
     body('isComplete')
     .optional()
-    .isBoolean().withMessage()
+    .isBoolean().withMessage('isComplete debe ser un valor booleano'),
+
+    body('users_id')
+    .optional()
+    .isInt({min: 1}).withMessage('El ID de usuario debe ser un entero positivo')
+    .custom(async (users_id) => {
+        const user = await User.findByPk(users_id);
+        if (!user){
+            throw new Error('El usuario asignado a la tarea no existe');
+        }
+    }) 
 ]
