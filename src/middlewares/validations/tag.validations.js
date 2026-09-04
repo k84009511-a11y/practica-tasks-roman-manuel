@@ -42,3 +42,15 @@ export const validateAddTagToTask = [
             }
         })
 ];
+
+export const validateUpdateTag = [
+    body('name')
+        .optional()
+        .notEmpty().withMessage('El nombre de la etiqueta no puede estar vacío')
+        .custom(async (name) => {
+            const tag = await Tag.findOne({ where: { name } });
+            if (tag) {
+                throw new Error('La etiqueta ya existe');
+            }
+        })
+];

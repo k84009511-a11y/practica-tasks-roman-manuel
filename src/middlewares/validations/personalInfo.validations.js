@@ -46,3 +46,36 @@ export const validateCreatePersonalInfo = [
             }
         })
 ];
+
+export const validateUpdatePersonalInfo = [
+    body('dni')
+        .optional()
+        .isLength({ max: 15 }).withMessage('El DNI no puede exceder los 15 caracteres')
+        .custom(async (dni) => {
+            const info = await PersonalInfo.findOne({ where: { dni } });
+            if (info) {
+                throw new Error('El DNI ya se encuentra registrado');
+            }
+        }),
+    body('cuil')
+        .optional()
+        .isLength({ max: 15 }).withMessage('El CUIL no puede exceder los 15 caracteres')
+        .custom(async (cuil) => {
+            const info = await PersonalInfo.findOne({ where: { cuil } });
+            if (info) {
+                throw new Error('El CUIL ya se encuentra registrado');
+            }
+        }),
+    body('birthDate')
+        .optional()
+        .isISO8601().withMessage('La fecha de nacimiento debe tener formato válido (YYYY-MM-DD)'),
+    body('gender')
+        .optional()
+        .isLength({ max: 20 }).withMessage('El género no puede exceder los 20 caracteres'),
+    body('height')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('La altura debe ser un número válido'),
+    body('weight')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('El peso debe ser un número válido')
+];

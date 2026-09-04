@@ -32,3 +32,22 @@ export const validateCreateUser = [
     .notEmpty().withMessage('La contraseña es necesaria')
     .isLength({ min: 8 }).withMessage('La contraseña no puede contener menos de 8 caracteres')
 ];
+
+export const validateUpdateUser = [
+  body('name')
+  .optional()
+  .isLength({ min: 2}).withMessage('Tu nombre no puede contener menos de 2 caracteres'),
+
+  body('email')
+  .optional()
+  .isEmail().withMessage('El correo electrónico debe ser válido')
+  .custom(async (email) => {
+    const user = await User.findOne({ where: {email}});
+    if (user) {
+      throw new Error('El correo electrónico ya está registrado');    }
+  }),
+
+  body('password')
+  .optional()
+  .isLength({ min: 8}).withMessage('La contraseña no puede contener menos de 8 caracteres')
+]

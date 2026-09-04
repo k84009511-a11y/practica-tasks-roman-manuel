@@ -35,3 +35,22 @@ export const validateCreateTask = [
             }
         })
 ];
+export const validateUpdateTask = [
+    body('title')
+    .optional()
+    .isLength({max: 100}).withMessage('El título no puede superar los 100 caracteres')
+    .custom(async (title) => {
+        const task = await Task.findOne({where: {title}});
+        if (task) {
+            throw new Error('Ya existe una tarea con este título')
+        }
+    }), 
+
+    body('description')
+    .optional()
+    .notEmpty().withMessage('La descripción no puede estar vacía'),
+
+    body('isComplete')
+    .optional()
+    .isBoolean().withMessage()
+]
