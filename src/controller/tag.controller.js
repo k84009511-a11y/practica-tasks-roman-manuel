@@ -1,3 +1,4 @@
+import { matchedData } from "express-validator";
 import { Tag } from "../models/tag.model.js";
 import { Task } from "../models/task.model.js";
 
@@ -107,6 +108,24 @@ export const getTagsByTask = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Error al obtener las etiquetas de la task",
+      error: error.message
+    });
+  }
+};
+
+export const updateTag = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tag = await Tag.findByPk(id);
+    if (!tag) {
+      return res.status(404).json({ message: "Etiqueta no encontrada" });
+    }
+    const validatedData = matchedData(req);
+    await tag.update(validatedData);
+    return res.status(200).json(tag);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al actualizar la etiqueta",
       error: error.message
     });
   }

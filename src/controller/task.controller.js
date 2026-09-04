@@ -1,3 +1,4 @@
+import { matchedData } from "express-validator";
 import { Task } from "../models/task.model.js";
 import { User } from "../models/user.model.js";
 
@@ -97,7 +98,8 @@ export const updateTask = async (req, res) => {
         return res.status(404).json({ message: "Tarea no encontrada"})
     }
 
-    await task.update(req.body)
+    const validatedData = matchedData(req)
+    await task.update(validatedData)
 
     return res.status(200).json(task)
 

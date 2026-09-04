@@ -24,3 +24,4 @@ tagRouter.delete('/tags/:id', validateTagId, validate, deleteTag);
 
 tagRouter.post('/tasks/:taskId/tags/:tagId', validateAddTagToTask, validate, addTagToTask);
 tagRouter.get('/tasks/:taskId/tags', validateTaskId, validate, getTagsByTask);
+tagRouter.put('/tags/:id', validateTagId, validateUpdateTag, validate, updateTag);

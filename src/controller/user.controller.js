@@ -95,16 +95,16 @@ export const deleteUser = async (req, res) => {
         })
     }
 }
-export const updateUser = async () => {
+export const updateUser = async (req, res) => {
     try{
         const { id } = req.params;
 
         const user = await User.findByPk(id)
         if(!user) {
-            return res.status(404).json( { message: "Usuario encontrado"});
+            return res.status(404).json( { message: "Usuario no encontrado"});
         }
-
-        await user.update(req.body);
+        const validatedData = matchedData(req)
+        await user.update(validatedData);
 
         return res.status(200).json(user)
     }catch(error){

@@ -8,7 +8,8 @@ import {
 } from "../controller/user.controller.js";
 import { 
     validateCreateUser, 
-    validateUserId 
+    validateUserId,
+    validateUpdateUser
 } from "../middlewares/validations/user.validations.js";
 import { validate } from "../middlewares/validate.js";
 
@@ -18,4 +19,4 @@ userRouter.post('/users', validateCreateUser, validate, createUser);
 userRouter.get('/users', getUser);
 userRouter.get('/users/:id', validateUserId, validate, getUserById);
 userRouter.delete('/users/:id', validateUserId, validate, deleteUser);
-userRouter.put('/users/:id', validateUserId, validate, updateUser);
+userRouter.put('/users/:id', validateUserId, validateUpdateUser ,validate, updateUser);

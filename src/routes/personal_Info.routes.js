@@ -8,7 +8,8 @@ import {
 } from "../controller/personal_Info.controller.js";
 import { 
     validateCreatePersonalInfo, 
-    validatePersonalInfoId 
+    validatePersonalInfoId, 
+    validateUpdatePersonalInfo
 } from "../middlewares/validations/personalInfo.validations.js";
 import { validate } from "../middlewares/validate.js";
 
@@ -18,4 +19,4 @@ personalInfoRouter.post('/personalInfos', validateCreatePersonalInfo, validate, 
 personalInfoRouter.get('/personalInfos', getPersonalInfo);
 personalInfoRouter.get('/personalInfos/:id', validatePersonalInfoId, validate, getPersonalInfoById);
 personalInfoRouter.delete('/personalInfos/:id', validatePersonalInfoId, validate, deletePersonalInfo);
-personalInfoRouter.put('/personalInfos/:id', validatePersonalInfoId, validate, updatePersonalInfo);
+personalInfoRouter.put('/personalInfos/:id', validatePersonalInfoId, validateUpdatePersonalInfo, validate, updatePersonalInfo);

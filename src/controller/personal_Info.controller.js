@@ -1,3 +1,4 @@
+import { matchedData } from "express-validator";
 import { PersonalInfo } from "../models/personal_Info.model.js";
 import { User } from "../models/user.model.js";
 
@@ -88,7 +89,7 @@ export const deletePersonalInfo = async (req, res) => {
         })
     }
 }
-export const updatePersonalInfo = async () => {
+export const updatePersonalInfo = async (req, res) => {
     try{
         const { id } = req.params;
 
@@ -96,8 +97,8 @@ export const updatePersonalInfo = async () => {
         if(!info) {
             return res.status(404).json( { message: "Informacion del usuario encontrada"});
         }
-
-        await PersonalInfo.update(req.body);
+        const validatedData = matchedData(req)
+        await PersonalInfo.update(validatedData);
 
         return res.status(200).json(info)
     }catch(error){
